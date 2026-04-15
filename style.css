@@ -128,7 +128,6 @@ a:visited {
   transition: all 0.3s;
 }
 
-/* Munculkan tombol HANYA saat parent (.workout) di-hover */
 .workout:hover .workout__edit--delete {
   opacity: 1;
   visibility: visible;

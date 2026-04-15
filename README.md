@@ -35,4 +35,4 @@ Since this is a client-side vanilla JavaScript application, there is no complex 
 
 1. Clone this repository:
    ```bash
-   git clone [https://github.com/your-username/mapty.git](https://github.com/your-username/mapty.git)
+   git clone [https://github.com/fahri238/mapty.git](https://github.com/fahri238/mapty.git)
