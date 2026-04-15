@@ -8,6 +8,8 @@ const inputDuration = document.querySelector('.form__input--duration');
 const inputCadence = document.querySelector('.form__input--cadence');
 const inputElevation = document.querySelector('.form__input--elevation');
 const containerWorkoutCycling = document.querySelector('workout--cycling');
+const sidebar = document.querySelector('.sidebar');
+const containerCardAction = document.querySelector('.card-actions');
 
 ///////////////////////////////////////////////////////////////////////////
 // Using the Geolocation API
@@ -104,6 +106,25 @@ class App {
       'click',
       this._handleEditDelete.bind(this),
     );
+
+    sidebar.addEventListener('click', e => {
+      if (e.target === e.currentTarget) {
+        this._hideForm();
+      }
+    });
+
+    containerCardAction.addEventListener(
+      'click',
+      this._handleSortDeleteAll.bind(this),
+    );
+
+    if(this.#workouts.length === 0) {
+      containerCardAction.classList.add('card-actions--hidden')
+      console.log('tidak ada workout')
+    }else {
+      containerCardAction.classList.remove('card-actions--hidden')
+      console.log('ada workout')
+    }
     // this._showEditDelete();
   }
 
@@ -259,6 +280,8 @@ class App {
 
     // set local storage to all workouts
     this._setLocalStorage();
+
+    location.reload();
   }
 
   // _showEditDelete(workouts) {
@@ -302,15 +325,32 @@ class App {
   //   });
   // }
 
+  _handleSortDeleteAll(e) {
+    const btnSort = e.target.closest('.sorting');
+    const btnDeleteAll = e.target.closest('.delete-all');
+
+    if (btnSort) {
+      this.#workouts.sort((a, b) => a.distance - b.distance);
+
+      this._setLocalStorage();
+      location.reload();
+    }
+    if (btnDeleteAll) {
+      const isSure = confirm('Are you sure want to delete all workouts?');
+      if (!isSure) return;
+      if (isSure) {
+        localStorage.clear();
+        location.reload();
+      }
+    }
+  }
+
   _handleEditDelete(e) {
-    console.log('Elemen yang diklik:', e.target);
     const btnEdit = e.target.closest('.btn-edit');
     const btnDelete = e.target.closest('.btn-delete');
     const workoutEl = e.target.closest('.workout');
 
     if (!workoutEl) return;
-
-    console.log('Tombol Delete terdeteksi?', btnDelete);
 
     if (btnDelete) {
       const isSure = confirm('Are you sure want to delete this workout');
@@ -339,8 +379,6 @@ class App {
         inputType.value = workout.type;
         inputDistance.value = workout.distance;
         inputDuration.value = workout.duration;
-
-        console.log(workout);
 
         if (workout.type === 'running') {
           inputCadence
@@ -409,16 +447,15 @@ class App {
             <span class="workout__unit">spm</span>
           </div>
           <div class="workout__edit--delete">
-            <div class="workout__details">
-              <span class="workout__value btn-edit">✏️</span>
+            <div class="workout__details btn-edit">
+              <span class="workout__value ">✏️</span>
               <span class="workout__unit">edit</span>
             </div>
-            <div class="workout__details">
-              <span class="workout__value btn-delete">🗑️</span>
+            <div class="workout__details btn-delete">
+              <span class="workout__value">🗑️</span>
               <span class="workout__unit">delete</span>
         </div>
           </div>
-          
         </li>`;
 
     if (workouts.type === 'cycling')
@@ -433,13 +470,13 @@ class App {
             <span class="workout__value">${workouts.elevationGain}</span>
             <span class="workout__unit">m</span>
           </div>
-          <div class="workout__edit--delete">
+          <div class="workout__edit--delete btn-edit">
             <div class="workout__details">
-              <span class="workout__value btn-edit">✏️</span>
+              <span class="workout__value ">✏️</span>
               <span class="workout__unit">edit</span>
             </div>
-            <div class="workout__details">
-              <span class="workout__value btn-delete">🗑️</span>
+            <div class="workout__details btn-delete">
+              <span class="workout__value ">🗑️</span>
               <span class="workout__unit">delete</span>
         </div>
           </div>
