@@ -100,7 +100,10 @@ class App {
 
     containerWorkouts.addEventListener('click', this._moveToPopup.bind(this));
 
-    containerWorkouts.addEventListener('click', this._handleEdit.bind(this));
+    containerWorkouts.addEventListener(
+      'click',
+      this._handleEditDelete.bind(this),
+    );
     // this._showEditDelete();
   }
 
@@ -299,39 +302,61 @@ class App {
   //   });
   // }
 
-  _handleEdit(e) {
-    const btnEdit = e.target.closest('.workout__edit--delete');
-
-    if (!btnEdit) return;
-
+  _handleEditDelete(e) {
+    console.log('Elemen yang diklik:', e.target);
+    const btnEdit = e.target.closest('.btn-edit');
+    const btnDelete = e.target.closest('.btn-delete');
     const workoutEl = e.target.closest('.workout');
-    const workout = this.#workouts.find(work => {
-      return work.id == workoutEl.dataset.id;
-    });
 
-    if (workout) {
-      this.#editMode = true;
-      this.#editWorkoutId = workout.id;
+    if (!workoutEl) return;
 
-      this._showForm();
-      inputType.value = workout.type;
-      inputDistance.value = workout.distance;
-      inputDuration.value = workout.duration;
+    console.log('Tombol Delete terdeteksi?', btnDelete);
 
-      console.log(workout);
+    if (btnDelete) {
+      const isSure = confirm('Are you sure want to delete this workout');
+      if (!isSure) return;
 
-      if (workout.type === 'running') {
-        inputCadence
-          .closest('.form__row')
-          .classList.remove('form__row--hidden');
-        inputElevation.closest('.form__row').classList.add('form__row--hidden');
-        inputCadence.value = workout.cadence;
-      } else {
-        inputElevation
-          .closest('.form__row')
-          .classList.remove('form__row--hidden');
-        inputCadence.closest('.form__row').classList.add('form__row--hidden');
-        inputElevation.value = workout.elevationGain;
+      this.#workouts = this.#workouts.filter(
+        work => work.id !== workoutEl.dataset.id,
+      );
+
+      this._setLocalStorage();
+
+      location.reload();
+      return;
+    }
+
+    if (btnEdit) {
+      const workout = this.#workouts.find(work => {
+        return work.id == workoutEl.dataset.id;
+      });
+
+      if (workout) {
+        this.#editMode = true;
+        this.#editWorkoutId = workout.id;
+
+        this._showForm();
+        inputType.value = workout.type;
+        inputDistance.value = workout.distance;
+        inputDuration.value = workout.duration;
+
+        console.log(workout);
+
+        if (workout.type === 'running') {
+          inputCadence
+            .closest('.form__row')
+            .classList.remove('form__row--hidden');
+          inputElevation
+            .closest('.form__row')
+            .classList.add('form__row--hidden');
+          inputCadence.value = workout.cadence;
+        } else {
+          inputElevation
+            .closest('.form__row')
+            .classList.remove('form__row--hidden');
+          inputCadence.closest('.form__row').classList.add('form__row--hidden');
+          inputElevation.value = workout.elevationGain;
+        }
       }
     }
   }
@@ -385,11 +410,11 @@ class App {
           </div>
           <div class="workout__edit--delete">
             <div class="workout__details">
-              <span class="workout__value">✏️</span>
+              <span class="workout__value btn-edit">✏️</span>
               <span class="workout__unit">edit</span>
             </div>
             <div class="workout__details">
-              <span class="workout__value">🗑️</span>
+              <span class="workout__value btn-delete">🗑️</span>
               <span class="workout__unit">delete</span>
         </div>
           </div>
@@ -410,11 +435,11 @@ class App {
           </div>
           <div class="workout__edit--delete">
             <div class="workout__details">
-              <span class="workout__value">✏️</span>
+              <span class="workout__value btn-edit">✏️</span>
               <span class="workout__unit">edit</span>
             </div>
             <div class="workout__details">
-              <span class="workout__value">🗑️</span>
+              <span class="workout__value btn-delete">🗑️</span>
               <span class="workout__unit">delete</span>
         </div>
           </div>
